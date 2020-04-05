@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: dovry
-  description: role to setup my HTPC - install software
+  description: role to setup my HTPC - install mergerfs
   license: MIT
   min_ansible_version: 2.5
 

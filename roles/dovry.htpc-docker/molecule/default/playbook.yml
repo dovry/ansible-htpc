@@ -2,4 +2,4 @@
 - name: Converge
   hosts: all
   roles:
-    - role: dovry.htpc-software
+    - role: dovry.htpc-docker
