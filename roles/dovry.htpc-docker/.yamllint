@@ -2,6 +2,9 @@
 # Based on ansible-lint config
 extends: default
 
+skip_list:
+  - '501'
+
 rules:
   braces:
     max-spaces-inside: 1

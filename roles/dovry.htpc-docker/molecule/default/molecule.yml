@@ -12,6 +12,7 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /run/lock:/run/lock:ro
+      - /var/run/docker.sock:/var/run/docker.sock # required for tests
     pre_build_image: true
 provisioner:
   name: ansible

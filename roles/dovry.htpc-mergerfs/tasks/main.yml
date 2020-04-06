@@ -1,2 +1,16 @@
 ---
 # tasks file for dovry.htpc-mergerfs
+
+- name: mergerfs - check if mergerfs is installed
+  # changed = not installed
+  command: dpkg-query -W mergerfs
+  register: mergerfs_pkg_check
+  failed_when: mergerfs_pkg_check.rc > 1
+  changed_when: mergerfs_pkg_check.rc == 1
+
+- name: mergerfs - install mergerfs
+  when: mergerfs_pkg_check.changed
+  apt:
+    name:
+      - mergerfs
+    update_cache: true
