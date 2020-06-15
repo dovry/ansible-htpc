@@ -6,3 +6,6 @@
     path: "{{ folders }}"
     state: directory
     mode: '0775'
+
+- name: bootstrap - include drives.yml
+  include: drives.yml

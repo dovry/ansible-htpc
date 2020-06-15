@@ -1,2 +1,33 @@
 ---
 # vars file for dovry.htpc-bootstrap
+
+# present - useful for testing and verification
+# mounted - mounts the drives
+disk_state: mounted
+
+folders:
+  - "/mnt/disk1"
+  - "/mnt/disk2"
+  - "/mnt/disk3"
+  - "/mnt/parity"
+  - "/mnt/storage"
+
+# ls /dev/disk/by-id
+# NB! grab the "NNNN-partX" ID
+disk_id:
+  - "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0FVRJV2-part1"
+  - "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K3AX5XT6-part1"
+  - "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K5YTYE7P-part1"
+  - "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K2DVURR6-part1"
+
+disk_mnt:
+  - "/mnt/disk1"
+  - "/mnt/disk2"
+  - "/mnt/disk3"
+  - "/mnt/parity"
+
+disk_fstype:
+  - ext4
+
+disk_opts:
+  - defaults

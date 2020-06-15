@@ -11,10 +11,26 @@ none
 Role Variables
 --------------
 
-defaults/main.yml
+vars/main.yml
 
 ```yaml
+# folders to create
 folders:
+
+# mounted / present
+disk_state:
+
+# ls /dev/disk/by-id
+disk_id:
+
+# mount path
+disk_mnt:
+
+# filesystem type, ex. ext4, xfs, zfs, etc-
+disk_fstype:
+
+# fstab mount options
+disk_opts:
 ```
 
 Dependencies
@@ -26,9 +42,9 @@ Example Playbook
 ----------------
 
 ```yaml
-    - hosts: target
-      roles:
-         - { role: dovry.htpc-bootstrap }
+- hosts: target
+  roles:
+     - { role: dovry.htpc-bootstrap }
 ```
 
 License

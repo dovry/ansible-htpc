@@ -1,0 +1,22 @@
+---
+# tasks/drive.yml for dovry.htpc-bootstrap
+
+- name: bootstrap > drives - mount disks
+  mount:
+    src: "{{ item.0 }}" # loop over first list
+    path: "{{ item.1 }}" # loop over second list
+    fstype: "{{ disk_fstype | string }}"
+    state: "{{ disk_state }}"
+    opts: "{{ disk_opts | string }}"
+  with_together:
+    - "{{ disk_id }}"
+    - "{{ disk_mnt }}"
+
+- name: bootstrap > drives - mergerfs mount
+  lineinfile:
+    path: /etc/fstab
+    state: present
+    insertafter: '^\/dev\/disk\/by-id'
+    line: "/mnt/disk* /mnt/storage fuse.mergerfs direct_io,defaults,allow_other,minfreespace=50G,fsname=mergerfs 0 0"
+    validate: "findmnt --verify %s"
+    
