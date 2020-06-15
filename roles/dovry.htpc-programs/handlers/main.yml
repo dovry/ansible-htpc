@@ -1,2 +1,8 @@
 ---
 # handlers file for dovry.htpc-programs
+
+- name: programs > snapraid - run snapraid sync
+  command: snapraid sync
+  async: 1000
+  poll: 0
+  register: sync_sleep

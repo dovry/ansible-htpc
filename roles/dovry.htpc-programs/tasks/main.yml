@@ -41,6 +41,7 @@
       - fuse
       - python3 # required for snapraid-runner
       - snapraid # requires the apt repository task to run successfully
+  register: pkgs_install
 
 - name: bootstrap - install QOL software
   when: qol_pkgs is defined
@@ -52,5 +53,8 @@
       - tree
       - vim
 
-#- name: programs - Include docker.yml
-#  include: docker.yml
+- name: programs - Include docker.yml
+  include: docker.yml
+
+- name: programs - Include snapraid.yml
+  include: snapraid.yml

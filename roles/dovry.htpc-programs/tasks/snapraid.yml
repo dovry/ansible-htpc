@@ -2,7 +2,7 @@
 # tasks/snapraid.yml file for dovry.htpc-programs
 
 - name: programs > snapraid - include vars/snapraid_vars.yml
-  include: vars/snapraid_vars.yml
+  include_vars: snapraid_vars.yml
 
 - name: programs > snapraid - template config file
   template:
@@ -11,13 +11,8 @@
     owner: root
     group: root
     mode: "644"
-
-# initiate sync in the background while the rest of the tasks run
-- name: programs > snapraid - run snapraid sync
-  command: snapraid sync
-  async: 1000
-  poll: 0
-  register: sync_sleep
+  # initiate sync in the background while the rest of the tasks run
+  notify: programs > snapraid - run snapraid sync
 
 - name: programs > snapraid - fetch snapraid-runner
   get_url:
@@ -41,7 +36,7 @@
     job: "python3 {{ snap_runner_py }} -c {{ snap_runner_conf }}"
 
 - name: programs > snapraid - check on sync job
-  async_status: 
+  async_status:
     jid: "{{ sync_sleep.ansible_job_id }}"
   register: sync_result
   until: sync_result.finished
