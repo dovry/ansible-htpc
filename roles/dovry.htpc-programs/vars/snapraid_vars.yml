@@ -3,9 +3,15 @@
 
 snap_conf: /etc/snapraid.conf # has default
 
-# CRON
 snap_runner_py: /opt/snapraid/snapraid-runner.py
 snap_runner_conf: /opt/snapraid/snapraid-runner.conf
+
+# CRON - all values have a default
+snap_minute: "0"
+snap_hour: "4"
+snap_day: "*"
+snap_weekday: "*"
+snap_month: "*"
 
 # leave empty to disable
 snap_log: snapraid.log

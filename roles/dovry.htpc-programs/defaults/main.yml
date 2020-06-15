@@ -11,6 +11,13 @@ docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | 
 qol_pkgs: true # general usability, vim, tree, etc.
 
 snap_conf: /etc/snapraid.conf
+
+snap_minute: "0" # XX:00 
+snap_hour: "4" # 04:XX AM
+snap_day: "1-31/2" # every other day
+snap_weekday: "*"
+snap_month: "*"
+
 delete_threshold: 250
 snap_email_subject: "[SnapRAID] Status Report"
 snap_mail_port: ""

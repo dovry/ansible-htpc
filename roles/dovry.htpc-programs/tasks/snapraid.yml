@@ -30,9 +30,11 @@
 - name: programs > snapraid - setup cronjob for snapraid sync
   cron:
     name: "snapraid-runner.py sync job"
-    minute: "0"
-    hour: "4"
-    day: "daily"
+    minute: "{{ snap_minute }}"
+    hour: "{{ snap_hour }}"
+    day: "{{ snap_day }}"
+    snap_weekday: "*"
+    snap_month: "*"
     job: "python3 {{ snap_runner_py }} -c {{ snap_runner_conf }}"
 
 - name: programs > snapraid - check on sync job
