@@ -1,0 +1,18 @@
+---
+# tasks/samba.yml file for dovry.htpc-programs
+
+- name: programs > samba - install samba
+  apt:
+    name: "{{ samba_pkgs }}"
+    update_cache: true
+  vars:
+    samba_pkgs:
+      - samba
+      - nfs-kernel-server
+
+- name: programs > samba - template smb.conf
+  template:
+    src: files/smb.conf.j2
+    dest: /etc/samba/smb.conf
+    backup: true
+  notify: programs > samba - restart samba service

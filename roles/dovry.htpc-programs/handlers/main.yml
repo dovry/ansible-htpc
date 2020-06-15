@@ -6,3 +6,9 @@
   async: 1000
   poll: 0
   register: sync_sleep
+
+- name: programs > samba - restart samba service
+  service:
+    name: smdb
+    enabled: "{{ samba_service_enabled }}"
+    state: "{{ samba_service_state }}"

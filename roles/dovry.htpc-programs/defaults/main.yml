@@ -1,6 +1,11 @@
 ---
 # defaults file for dovry.htpc-programs
 
+docker: true
+snapraid: true
+samba: true
+nfs: true
+
 apt_arch: amd64
 
 # DOCKER
@@ -21,3 +26,6 @@ snap_month: "*"
 delete_threshold: 250
 snap_email_subject: "[SnapRAID] Status Report"
 snap_mail_port: ""
+
+samba_service_enabled: enabled
+samba_service_state: restarted

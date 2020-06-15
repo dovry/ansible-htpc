@@ -40,7 +40,7 @@
       - mergerfs
       - fuse
       - python3 # required for snapraid-runner
-      - snapraid # requires the apt repository task to run successfully
+      - snapraid # requires the apt repository task to run successfully 
   register: pkgs_install
 
 - name: bootstrap - install QOL software
@@ -55,6 +55,16 @@
 
 - name: programs - Include docker.yml
   include: docker.yml
+  when: docker is defined
 
 - name: programs - Include snapraid.yml
   include: snapraid.yml
+  when: snapraid is defined
+
+- name: programs - Include samba.yml
+  include: samba.yml
+  when: samba is defined
+
+- name: programs - Include nfs.yml
+  include: nfs.yml
+  when: nfs is defined
