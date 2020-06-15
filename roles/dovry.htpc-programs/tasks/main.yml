@@ -24,7 +24,11 @@
 
 - name: programs - Add repositories for packages
   apt_repository:
-    repo: ppa:tikhonov/snapraid
+    repo: "{{ repos }}"
+  vars:
+    repos:
+      - ppa:tikhonov/snapraid
+      - ppa:deadsnakes/ppa # required for snapraid-runner
 
 - name: programs - Install desired packages
   apt:
@@ -35,9 +39,18 @@
     packages:
       - mergerfs
       - fuse
+      - python3 # required for snapraid-runner
       - snapraid # requires the apt repository task to run successfully
-      - tree
-      - silversearcher-ag
 
-- name: programs - Include docker.yml
-  include: docker.yml
+- name: bootstrap - install QOL software
+  when: qol_pkgs is defined
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - silversearcher-ag
+      - tree
+      - vim
+
+#- name: programs - Include docker.yml
+#  include: docker.yml

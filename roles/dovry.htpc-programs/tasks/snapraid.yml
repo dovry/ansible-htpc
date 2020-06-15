@@ -1,0 +1,48 @@
+---
+# tasks/snapraid.yml file for dovry.htpc-programs
+
+- name: programs > snapraid - include vars/snapraid_vars.yml
+  include: vars/snapraid_vars.yml
+
+- name: programs > snapraid - template config file
+  template:
+    src: files/snapraid.conf.j2
+    dest: "{{ snap_conf }}"
+    owner: root
+    group: root
+    mode: "644"
+
+# initiate sync in the background while the rest of the tasks run
+- name: programs > snapraid - run snapraid sync
+  command: snapraid sync
+  async: 1000
+  poll: 0
+  register: sync_sleep
+
+- name: programs > snapraid - fetch snapraid-runner
+  get_url:
+    url: "https://raw.githubusercontent.com/Chronial/snapraid-runner/master/snapraid-runner.py"
+    dest: "{{ snap_runner_py }}"
+    owner: root
+    group: root
+    mode: 644
+
+- name: programs > snapraid - template runner
+  template:
+    src: files/snapraid-runner.j2
+    dest: "{{ snap_runner_conf }}"
+
+- name: programs > snapraid - setup cronjob for snapraid sync
+  cron:
+    name: "snapraid-runner.py sync job"
+    minute: "0"
+    hour: "4"
+    day: "daily"
+    job: "python3 {{ snap_runner_py }} -c {{ snap_runner_conf }}"
+
+- name: programs > snapraid - check on sync job
+  async_status: 
+    jid: "{{ sync_sleep.ansible_job_id }}"
+  register: sync_result
+  until: sync_result.finished
+  retries: 30

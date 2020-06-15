@@ -11,6 +11,7 @@ folders:
   - "/mnt/disk3"
   - "/mnt/parity"
   - "/mnt/storage"
+  - "/opt/snapraid"
 
 # ls /dev/disk/by-id
 # NB! grab the "NNNN-partX" ID

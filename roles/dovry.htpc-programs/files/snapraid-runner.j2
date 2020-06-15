@@ -1,0 +1,37 @@
+[snapraid]
+; path to the snapraid executable
+executable = /usr/local/bin/snapraid
+; path to the snapraid config to be used
+config = "{{ snap_conf }}"
+; abort operation if there are more deletes than this, set to -1 to disable
+deletethreshold = "{{ delete_threshold }}"
+
+[logging]
+; logfile to write to, leave empty to disable
+file = "{{ snap_log }}"
+; maximum logfile size in KiB, leave empty for infinite
+maxsize = "{{ snap_log_size_in_kb }}"
+
+[email]
+; when to send an email, comma-separated list of [success, error]
+sendon = "{{ mail_send_on }}"
+; set to false to get full program output via email
+short = "{{ snap_short_mail }}"
+subject = "{{ snap_mail_subject }}"
+from = "{{ snap_mail_user }}"
+to = "{{ snap_mail_recipient if snap_mail_recipient is defined else snap_mail_user }}"
+
+[smtp]
+host = "{{ snap_mail_host }}"
+; leave empty for default port
+port = "{{ snap_mail_port }}"
+; set to "true" to activate
+ssl = "{{ snap_mail_ssl }}"
+user = "{{ snap_mail_user }}"
+password = "{{ snap_mail_pass }}"
+
+[scrub]
+; set to true to run scrub after sync
+enabled = "{{ snap_scrub }}"
+percentage = "{{ snap_scrub_percent }}"
+older-than = "{{ snap_scrub_older_than }}"
