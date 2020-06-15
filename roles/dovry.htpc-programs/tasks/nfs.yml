@@ -1,0 +1,14 @@
+---
+# tasks/nfs.yml file for dovry.htpc-programs
+
+- name: programs > nfs - template nfs config
+  template:
+    src: files/nfs.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: "644"
+    backup: true
+  notify:
+    - programs > nfs - initialize exportfs
+    - programs > nfs - initialize exportfs

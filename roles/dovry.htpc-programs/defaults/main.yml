@@ -29,3 +29,6 @@ snap_mail_port: ""
 
 samba_service_enabled: enabled
 samba_service_state: restarted
+
+# nfs share rw | ro -- read/write or read only
+nfs_rx: ro

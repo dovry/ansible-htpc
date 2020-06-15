@@ -35,7 +35,7 @@
     day: "{{ snap_day }}"
     snap_weekday: "*"
     snap_month: "*"
-    job: "python3 {{ snap_runner_py }} -c {{ snap_runner_conf }}"
+    job: "python3 {{ snap_runner_py }} --conf {{ snap_runner_conf }}"
 
 - name: programs > snapraid - check on sync job
   async_status:
