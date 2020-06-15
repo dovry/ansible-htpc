@@ -1,0 +1,43 @@
+---
+# tasks file for dovry.htpc-programs
+
+- name: programs - Remove undesired packages
+  apt:
+    name: "{{ packages }}"
+    state: absent
+    autoremove: true
+    autoclean: true
+  vars:
+    packages:
+      - snapd
+
+- name: programs - Install dependencies
+  apt:
+    name: "{{ deps }}"
+    state: present
+    update_cache: true
+  vars:
+    deps:
+      - apt-transport-https
+      - gnupg-agent
+      - software-properties-common
+
+- name: programs - Add repositories for packages
+  apt_repository:
+    repo: ppa:tikhonov/snapraid
+
+- name: programs - Install desired packages
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+    state: present
+  vars:
+    packages:
+      - mergerfs
+      - fuse
+      - snapraid # requires the apt repository task to run successfully
+      - tree
+      - silversearcher-ag
+
+- name: programs - Include docker.yml
+  include: docker.yml

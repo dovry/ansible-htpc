@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    docker_users:
+  roles:
+    - role: dovry.htpc-programs

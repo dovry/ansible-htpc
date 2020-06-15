@@ -1,0 +1,9 @@
+---
+# playbook to install the software from roles/*
+# ansible-playbook install.yml
+
+- hosts: htpc
+  become: true
+  roles:
+    - dovry.htpc-bootstrap # prepare the system
+    - dovry.htpc-programs  # install required software

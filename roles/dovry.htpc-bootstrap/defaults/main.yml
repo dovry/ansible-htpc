@@ -1,0 +1,8 @@
+---
+# defaults file for dovry.htpc-bootstrap
+
+folders:
+  - /mnt/disk1
+  - /mnt/disk2
+  - /mnt/disk3
+  - /srv/storage

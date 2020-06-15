@@ -1,0 +1,70 @@
+---
+# docker.yml file for dovry.htpc-programs
+
+- name: programs > docker - Remove old docker instances
+  apt:
+    package: "{{ docker_pkgs }}"
+    state: absent
+  vars:
+    docker_pkgs:
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+
+- name: programs > docker - Install required packages
+  apt:
+    name: "{{ docker_pkgs }}"
+    state: present
+    update_cache: true
+  vars:
+    docker_pkgs:
+      - apt-transport-https
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+- name: programs > docker - Add docker apt key
+  apt_key:
+    url: "{{ docker_apt_gpg_key }}"
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    state: present
+  ignore_errors: "{{ docker_apt_ignore_key_error }}"
+
+- name: programs > docker - Add Docker repository
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    state: present
+    update_cache: true
+
+- name: programs > docker - Install docker
+  apt:
+    package: "{{ docker_pkgs }}"
+    state: present
+    update_cache: true
+  vars:
+    docker_pkgs:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+- name: programs > docker - ensure Docker is started and enabled at boot.
+  service:
+    name: docker
+    state: restarted
+    enabled: true
+
+- name: programs > docker - Ensure docker group exist
+  group:
+    name: docker
+    state: present
+
+- name: programs > docker - Add users to docker group
+  user:
+    name: "{{ item }}"
+    groups:
+      - docker
+    append: true
+  with_items: "{{ docker_users }}"
+  when: docker_users |bool

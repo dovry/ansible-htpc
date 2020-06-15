@@ -1,0 +1,25 @@
+---
+  dependency:
+    name: galaxy
+  driver:
+    name: docker
+  lint:
+    name: yamllint
+  platforms:
+    - name: ansible-role-programs
+      image: "dovry/docker_${MOLECULE_DISTRO:-ubuntu18}_ansible:${CONTAINER_TAG:-latest}"
+      command: ${MOLECULE_DOCKER_COMMAND:-""}
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        - /run/lock:/run/lock:ro
+      privileged: True # required for systemd
+      pre_build_image: true
+  provisioner:
+    name: ansible
+    log: true
+    lint:
+      name: ansible-lint
+  verifier:
+    name: testinfra
+    lint:
+      name: flake8

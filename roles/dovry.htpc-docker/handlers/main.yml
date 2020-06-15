@@ -1,8 +1,0 @@
----
-# handlers file for dovry.htpc-docker
-
-- name: docker - restart docker service
-  service:
-    name: docker
-    enabled: true
-    state: restarted

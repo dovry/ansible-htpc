@@ -1,0 +1,8 @@
+---
+# tasks file for dovry.htpc-bootstrap
+
+- name: bootstrap - create folders
+  file:
+    path: "{{ folders }}"
+    state: directory
+    mode: '0775'

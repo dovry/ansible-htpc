@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Dovry
+  description: Install all required software
+  license: MIT
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: Debian
+    versions:
+    - all
+
+  galaxy_tags: []
+
+  dependencies: [dovry.htpc-bootstrap]
