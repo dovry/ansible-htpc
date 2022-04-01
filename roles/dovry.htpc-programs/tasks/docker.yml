@@ -48,6 +48,11 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
+      - docker-compose
+
+- name: programs > docker - Install docker-compose and all docker dependencies with pip
+  pip:
+    name: docker-compose
 
 - name: programs > docker - ensure Docker is started and enabled at boot.
   service:

@@ -1,0 +1,9 @@
+---
+# handlers file for dovry.htpc-docker-compose
+
+- name: docker-compose - restart swag
+  docker_compose:
+    project_src: "{{ compose_src }}"
+    services: swag
+    restarted: true
+  changed_when: false # task should restart the container, sets desired results as ok

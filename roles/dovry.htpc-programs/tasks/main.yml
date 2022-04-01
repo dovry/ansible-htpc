@@ -24,11 +24,10 @@
 
 - name: programs - Add repositories for packages
   apt_repository:
-    repo: "{{ repos }}"
-  vars:
-    repos:
-      - ppa:tikhonov/snapraid
-      - ppa:deadsnakes/ppa # required for snapraid-runner
+    repo: "{{ item }}"
+  with_items:
+      - "ppa:tikhonov/snapraid"
+      - "ppa:deadsnakes/ppa" # required for snapraid-runner
 
 - name: programs - Install desired packages
   apt:
@@ -37,9 +36,12 @@
     state: present
   vars:
     packages:
-      - mergerfs
       - fuse
       - python3 # required for snapraid-runner
+      - python-pip
+      - python3-passlib
+      - python3-pip
+      - python3-setuptools
       - snapraid # requires the apt repository task to run successfully
   register: pkgs_install
 

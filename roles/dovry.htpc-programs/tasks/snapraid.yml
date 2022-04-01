@@ -13,6 +13,10 @@
     mode: "644"
   # initiate sync in the background while the rest of the tasks run
   notify: programs > snapraid - run snapraid sync
+  changed_when: true
+
+- name: run all notified handlers
+  meta: flush_handlers
 
 - name: programs > snapraid - fetch snapraid-runner
   get_url:
@@ -20,7 +24,7 @@
     dest: "{{ snap_runner_py }}"
     owner: root
     group: root
-    mode: 644
+    mode: "644"
 
 - name: programs > snapraid - template runner
   template:
@@ -33,13 +37,14 @@
     minute: "{{ snap_minute }}"
     hour: "{{ snap_hour }}"
     day: "{{ snap_day }}"
-    snap_weekday: "*"
-    snap_month: "*"
+    weekday: "{{ snap_weekday }}"
+    month: "{{ snap_month }}"
     job: "python3 {{ snap_runner_py }} --conf {{ snap_runner_conf }}"
 
-- name: programs > snapraid - check on sync job
-  async_status:
-    jid: "{{ sync_sleep.ansible_job_id }}"
-  register: sync_result
-  until: sync_result.finished
-  retries: 30
+# depending on existing data, this may take a few seconds to several hours
+#- name: programs > snapraid - check on sync job
+#  async_status:
+#    jid: "{{ sync_sleep.ansible_job_id }}"
+#  register: sync_result
+#  until: sync_result.finished
+#  retries: 30

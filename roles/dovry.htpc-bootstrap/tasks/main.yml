@@ -3,9 +3,24 @@
 
 - name: bootstrap - create folders
   file:
-    path: "{{ folders }}"
+    path: "{{ item }}"
     state: directory
     mode: '0775'
+  with_items:
+    - "{{ folders }}"
+
+# Plex and other media players will not function
+# with large libraries if the number is too low
+- name: bootstrap - Increase inotify max watches
+  sysctl: 
+    name: fs.inotify.max_user_watches 
+    value: "{{ max_watches }}"
+    sysctl_set: yes
+  tags:
+    - inotify
+
+- name: bootstrap - include mergerfs.yml
+  include: mergerfs.yml
 
 - name: bootstrap - include drives.yml
   include: drives.yml

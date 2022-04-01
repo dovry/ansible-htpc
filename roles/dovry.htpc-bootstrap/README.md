@@ -14,15 +14,14 @@ Role Variables
 vars/main.yml
 
 ```yaml
-# folders to create
+# list of folders to create
 folders:
 
-# mounted / present
-disk_state:
-
+# List of drives to mount via /etc/fstab
 # ls /dev/disk/by-id
 disk_id:
 
+# List of mount paths, use in conjunction with disk_id
 # mount path
 disk_mnt:
 

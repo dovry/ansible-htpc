@@ -1,9 +1,7 @@
 ---
 # vars file for dovry.htpc-bootstrap
 
-# present - useful for testing and verification
-# mounted - mounts the drives
-disk_state: mounted
+max_watches: 100000
 
 folders:
   - "/mnt/disk1"
@@ -27,8 +25,6 @@ disk_mnt:
   - "/mnt/disk3"
   - "/mnt/parity"
 
-disk_fstype:
-  - ext4
+disk_fstype: ext4
 
-disk_opts:
-  - defaults
+disk_opts: defaults

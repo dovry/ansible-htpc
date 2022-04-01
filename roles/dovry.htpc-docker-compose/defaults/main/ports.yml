@@ -1,0 +1,56 @@
+---
+# default ports file for dovry.htpc-docker-compose
+
+portainer_port: 9000
+
+heimdall_port1: 81
+heimdall_port2: 4443
+
+statping_port: 8050
+
+dozzle_tailsize: 250
+dozzle_port: 8085
+
+pyload_port1: 8001
+pyload_port2: 7227
+
+ytdl_port: 8998
+
+ombi_port: 3579
+
+tautulli_port: 8181
+
+jackett_port: 9117
+
+sonarr_port: 8989
+
+radarr_port: 7878
+
+bazarr_port: 6767
+
+lidarr_port: 8686
+
+airsonic_port: 4040
+
+beets_port: 8337
+
+calibre_port1: 8081
+calibre_port2: 8082
+calibre_web_port: 8083
+
+lazylibrarian_port: 5299
+
+qbit_port1: 6881
+qbit_port2: 8020
+
+sabnzbd1: 8090
+sabnzbd2: 9090
+
+nzbhydra_port: 5076 # failes without "_port"
+
+JELLYFIN: 8096
+JELLYFIN2: 8920
+
+muximux_port: 88
+
+digikam_port: 3000

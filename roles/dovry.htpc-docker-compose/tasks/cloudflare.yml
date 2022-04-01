@@ -1,0 +1,89 @@
+---
+
+# tasks/cloudflare.yml file for dovry.htpc-docker-compose
+
+- name: docker-compose - edit cloudflare.ini
+  become: true
+  #when:
+  #  - le_dns_cloudflare_email | bool
+  #  - le_dns_cloudflare_api | bool
+  notify: docker-compose - restart swag
+  lineinfile:
+    dest: "{{ config }}/swag/dns-conf/cloudflare.ini"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    mode: '0640'
+  with_items:
+    - { regexp: '^dns_cloudflare_email', line: "dns_cloudflare_email = {{ le_dns_cloudflare_email }}" }
+    - { regexp: '^dns_cloudflare_api_key', line: "dns_cloudflare_api_key = {{ le_dns_cloudflare_api }}" }
+  register: cf_ini
+  tags:
+    - dnsrecords
+    - cloudflareini
+
+- name: docker-compose - edit plex proxy conf to match container network mode
+  become: true
+  lineinfile:
+    path: "{{ config }}/swag/nginx/proxy-confs/plex.subdomain.conf.sample"
+    regexp: '^\s*set \$upstream_app'
+    line: 'set $upstream_app {{ ansible_default_ipv4.address}};'
+  register: plex_conf
+
+- name: docker-compose - enable htpasswd in swag
+  become: true
+  htpasswd:
+    dest: "{{ config }}/swag/nginx/.htpasswd"
+    name: "{{ htpasswd_user }}"
+    password: "{{ htpasswd_password }}"
+    mode: 0640
+  register: htpasswd_created
+  tags:
+  - htpasswd
+    
+- name: docker-compose - enable auth in proxy files 1/2
+  become: true
+  lineinfile:
+    dest: "{{ config }}/swag/nginx/proxy-confs/{{ item }}.{{ le_sub_type }}.conf.sample"
+    regexp: '^\s*\#auth_basic\s\"Restricted'
+    line: auth_basic "Restricted";
+  with_items:
+    - "{{ le_sub|reject('match', '(plex|ombi)')|list }}" # reject ombi because it does not support htpasswd
+  register: auth_proxy1
+
+- name: docker-compose - enable auth in proxy files 2/2
+  become: true
+  #when: htpasswd_created
+  lineinfile:
+    dest: "{{ config }}/swag/nginx/proxy-confs/{{ item }}.{{ le_sub_type }}.conf.sample"
+    regexp: '^\s*\#auth_basic_user_file'
+    line: auth_basic_user_file /config/nginx/.htpasswd;
+  with_items:
+    - "{{ le_sub|reject('match', '(plex|ombi)')|list }}" # reject ombi because it does not support htpasswd
+  register: auth_proxy2
+
+- name: docker-compose - modify nginx reverse proxy files
+  become: true
+  copy:
+    remote_src: true
+    src: "{{ config }}/swag/nginx/proxy-confs/{{ item }}.{{ le_sub_type }}.conf.sample"
+    dest: "{{ config }}/swag/nginx/proxy-confs/{{ item }}.{{ le_sub_type }}.conf"
+  with_items:
+    - "{{ le_sub }}"
+  register: proxy_files
+
+- name: docker-compose - create cloudflare dns records
+  cloudflare_dns:
+    zone: "{{ le_domain }}"
+    type: CNAME
+    record: "{{ item }}"
+    proxied: false
+    value: "{{ le_domain }}"
+    account_email: "{{ le_dns_cloudflare_email }}"
+    account_api_token: "{{ le_dns_cloudflare_api }}"
+  with_items:
+    - "{{ le_sub }}"
+  notify: docker-compose - restart swag
+  when:
+    - cf_ini or plex_conf or auth_proxy1 or auth_proxy2 or proxy_files
+  tags:
+    - dnsrecords

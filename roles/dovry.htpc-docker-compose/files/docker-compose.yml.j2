@@ -1,0 +1,446 @@
+version: '3'
+services:
+
+#
+# {{  ansible_managed }}
+#
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    command: -H unix:///var/run/docker.sock
+    restart: {{ restart }}
+    ports:
+      - {{ portainer_port }}:9000
+    volumes:
+      - {{ config }}/portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      {{ network_name }}:
+
+  swag:
+    container_name: swag
+    image: lscr.io/linuxserver/swag
+    restart: {{ restart }}
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+      - URL={{ le_domain }}
+      - SUBDOMAINS={{ le_sub|join(',')|default(wildcard) }}
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare #optional
+      - EMAIL={{ le_email }}
+      - ONLY_SUBDOMAINS=false #optional
+     # - EXTRA_DOMAINS=<extradomains> #optional
+    volumes:
+      - {{ config }}/swag:/config
+    ports:
+      - 443:443
+      - 80:80 #optional
+    networks:
+      {{ network_name }}:
+
+###############################################################
+###### CONFIGURATION ##########################################
+###############################################################
+
+  muximux:
+    image: lscr.io/linuxserver/muximux
+    container_name: muximux
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/muximux:/config
+    ports:
+      - {{ muximux_port }}:80
+    restart: {{ restart }}
+    networks:
+      - {{ network_name }}
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle
+    environment:
+      - DOZZLE_TAILSIZE={{ dozzle_tailsize }}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: {{ restart }}
+    ports:
+      - {{ dozzle_port }}:8080
+    networks:
+      {{ network_name }}:
+
+  pyload:
+    container_name: pyload
+    image: lscr.io/linuxserver/pyload
+    restart: {{ restart }}
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/pyload:/config
+      - {{ downloads }}/dl-manager:/downloads
+    ports:
+      - {{ pyload_port1 }}:8000
+      - {{ pyload_port2 }}:7227 #optional
+    networks:
+      {{ network_name }}:
+
+  ombi:
+    container_name: ombi
+    image: lscr.io/linuxserver/ombi
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+      #- BASE_URL=/ombi #optional
+    volumes:
+      - {{ config }}/ombi:/config
+    ports:
+      - {{ ombi_port }}:3579
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+
+  tautulli:
+    container_name: tautulli
+    image: lscr.io/linuxserver/tautulli
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/tautulli:/config
+      - {{ config }}/plex/Library/Application Support/Plex Media Server/Logs:/logs
+    ports:
+      - {{ tautulli_port }}:8181
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "plex"
+
+###############################################################
+###### INDEXERS ###############################################
+###############################################################
+
+  jackett:
+    container_name: jackett
+    image: lscr.io/linuxserver/jackett
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/jackett:/config
+      - {{ downloads }}:/downloads
+    ports:
+      - {{ jackett_port }}:9117
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "qbittorrent"
+
+  ytdl_material:
+    container_name: youtubedl
+    image: tzahi12345/youtubedl-material:latest
+    environment:
+    #  ALLOW_CONFIG_MUTATIONS: "true"
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+    restart: {{ restart }}
+    volumes:
+      - {{ downloads }}/ytdl/audio:/app/audio
+      - {{ downloads }}/ytdl/video:/app/video
+      - {{ downloads }}/ytdl/subscriptions:/app/subscriptions
+      - {{ config }}/ytdl_material/appdata:/app/appdata
+      - {{ config }}/ytdl_material/users:/app/users
+    ports:
+      - {{ ytdl_port }}:17442
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "portainer"
+
+###############################################################
+###### VIDEO ##################################################
+###############################################################
+
+  sonarr:
+    container_name: sonarr
+    image: lscr.io/linuxserver/sonarr
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/sonarr-v3:/config
+      - {{ tv }}:/tv
+      - {{ anime }}:/anime
+      - {{ cartoons }}:/cartoons
+      - {{ downloads }}:/downloads
+    ports:
+      - {{ sonarr_port }}:8989
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "jackett"
+      - "qbittorrent"
+
+  radarr:
+    container_name: radarr
+    image: lscr.io/linuxserver/radarr
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/radarr:/config
+      - {{ movies }}:/movies
+      - {{ nsfw }}:/nsfw
+      - {{ horror_movies }}:/horror_movies
+      - {{ downloads }}:/downloads
+    ports:
+      - {{ radarr_port }}:7878
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "jackett"
+      - "qbittorrent"
+
+  bazarr:
+    container_name: bazarr
+    image: lscr.io/linuxserver/bazarr
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/bazarr:/config
+      - {{ anime }}:/anime
+      - {{ cartoons }}:/cartoons
+      - {{ horror_movies }}:/horror_movies
+      - {{ movies }}:/movies
+      - {{ tv }}:/tv
+    ports:
+      - {{ bazarr_port }}:6767
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "radarr"
+      - "sonarr"
+
+###############################################################
+###### AUDIO ##################################################
+###############################################################
+
+  lidarr:
+    container_name: lidarr
+    image: lscr.io/linuxserver/lidarr
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/lidarr:/config
+      - {{ music }}:/music
+      - {{ downloads }}:/downloads
+    ports:
+      - {{ lidarr_port }}:8686
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "jackett"
+      - "qbittorrent"
+
+  beets:
+    container_name: beets
+    image: lscr.io/linuxserver/beets
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/beets:/config
+      - {{ music }}:/music
+      - {{ podcasts }}:/podcasts
+      - {{ downloads }}:/downloads
+    ports:
+      - {{ beets_port }}:8337
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "lidarr"
+      - "qbittorrent"
+
+###############################################################
+###### BOOKS ##################################################
+###############################################################
+
+  calibre:
+    container_name: calibre
+    image: lscr.io/linuxserver/calibre
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+      #- GUAC_USER=
+      #- GUAC_PASS=
+    volumes:
+      - {{ config }}/calibre:/config
+      - {{ downloads }}:/downloads
+      - {{ books }}:/books
+    ports:
+      - {{ calibre_port1 }}:8080
+      - {{ calibre_port2 }}:8081
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+
+
+
+###############################################################
+###### TORRENT ################################################
+###############################################################
+
+  qbittorrent:
+    container_name: qbittorrent
+    image: lscr.io/linuxserver/qbittorrent
+    restart: {{ restart }}
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+      - UMASK_SET=022
+      - WEBUI_PORT=8080
+    volumes:
+      - {{ config }}/qbittorrent:/config
+      - {{ downloads }}:/downloads
+      - {{ media }}:/media # to create torrents from existing media
+    ports:
+      - {{ qbit_port1 }}:6881
+      - {{ qbit_port1 }}:6881/udp
+      - {{ qbit_port2 }}:8080
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "portainer"
+
+###############################################################
+###### Usenet #################################################
+###############################################################
+
+  sabnzbd:
+    container_name: sabnzbd
+    image: lscr.io/linuxserver/sabnzbd
+    restart: {{ restart }}
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/sabnzbd:/config
+      - {{ downloads }}:/downloads
+#      - {{ downloads }}/incomplete:/incomplete-downloads #optional
+      - {{ media }}:/media
+    ports:
+      - {{ sabnzbd1 }}:8080
+      - {{ sabnzbd2 }}:9090
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "portainer"
+
+  nzbhydra2:
+    image: ghcr.io/linuxserver/nzbhydra2
+    container_name: nzbhydra2
+    restart: {{ restart }}
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/nzbhydra:/config
+      - {{ downloads }}:/downloads
+#      - {{ downloads }}/incomplete:/incomplete-downloads #optional
+      - {{ media }}:/media
+    ports:
+      - {{ nzbhydra_port }}:5076
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "sabnzbd"
+
+###############################################################
+###### PLAYER #################################################
+###############################################################
+
+  jellyfin:
+    container_name: jellyfin
+    image: lscr.io/linuxserver/jellyfin
+    restart: {{ restart }}
+    environment:
+     - PUID={{ puid }}
+     - PGID={{ pgid }}
+     - TZ={{ tz }}
+    volumes:
+     - {{ config }}/jellyfin:/config
+     - {{ anime }}:/anime
+     - {{ cartoons }}:/cartoons
+     - {{ horror_movies }}:/horror_movies
+     - {{ movies }}:/movies
+     - {{ tv }}:/tv
+    ports:
+      - {{ JELLYFIN }}:8096
+      - {{ JELLYFIN2 }}:8920 #optional
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - portainer
+
+  plex:
+    container_name: plex
+    image: lscr.io/linuxserver/plex
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+      - VERSION=docker
+      #- PLEX_CLAIM= # https://plex.tv/claim
+    volumes:
+      - {{ config }}/plex/:/config
+      - {{ transcode }}:/transcode
+      - {{ anime }}:/anime
+      - {{ audiobooks }}:/audiobooks
+      - {{ nsfw }}:/nsfw
+      - {{ cartoons }}:/cartoons
+      - {{ educational }}:/educational
+      - {{ horror_movies }}:/horror_movies
+      - {{ music }}:/music
+      - {{ movies }}:/movies
+      - {{ podcasts }}:/podcasts
+      - {{ tv }}:/tv
+    restart: {{ restart }}
+    network_mode: host
+    depends_on:
+      - portainer
+
+volumes:
+  portainer_data:
+
+networks:
+  {{ network_name }}:
+    ipam:
+      driver: default

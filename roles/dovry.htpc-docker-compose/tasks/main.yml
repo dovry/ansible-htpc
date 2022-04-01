@@ -1,0 +1,27 @@
+---
+# tasks file for dovry.htpc-docker-compose
+
+- name: docker-compose > main - include docker.yml
+  import_tasks: docker.yml
+  tags:
+  - docker
+
+# task to manually restart swag
+# never runs, use '--tags restartswag'
+- name: docker-compose > main - restart swag
+  docker_compose:
+    project_src: "{{ compose_src }}"
+    services: swag
+    restarted: true
+  changed_when: false # task should restart the container, sets desired results as ok
+  tags:
+    - never
+    - restartswag
+
+- name: docker-compose > main - include cloudflare.yml
+  import_tasks: cloudflare.yml
+  when: le_dns_cloudflare_email | length > 0 and
+        le_dns_cloudflare_api | length > 0
+  tags:
+  - cloud
+  - htpasswd

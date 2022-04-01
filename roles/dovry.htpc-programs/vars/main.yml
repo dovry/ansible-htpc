@@ -2,4 +2,3 @@
 # vars file for dovry.htpc-programs
 
 docker_users:
-  - dovre

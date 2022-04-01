@@ -1,0 +1,29 @@
+---
+# default letsencrypt file for dovry.htpc-docker-compose
+
+le_domain: bjarnason.cloud
+le_sub_type: subdomain # subdomain / subfolder
+le_sub: # DNS records for each service
+  - bazarr
+  - calibre-web
+  - dozzle
+  - jackett
+  - jellyfin
+  - lidarr
+  - nzbhydra
+  - ombi
+  - plex
+  - portainer
+  - pyload
+  - qbittorrent
+  - radarr
+  - sabnzbd
+  - sonarr
+  - tautulli
+#  - muximux
+#  - airsonic
+#  - heimdall
+#  - lazylibrarian
+#  - muximux
+#  - organizr
+#  - statping

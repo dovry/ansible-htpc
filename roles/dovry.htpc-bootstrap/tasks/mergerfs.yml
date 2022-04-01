@@ -1,0 +1,25 @@
+---
+
+# tasks/mergerfs.yml file for dovry.htpc-bootstrap
+
+- name: bootstrap > mergerfs - install mergerfs
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+    state: present
+  vars:
+    packages:
+      - mergerfs
+
+- name: bootstrap > mergerfs - install tooling
+  git:
+    repo: "{{ item }}"
+    dest: /opt/mergerfs/tooling
+  with_items:
+    - https://github.com/trapexit/mergerfs-tools.git
+    - https://github.com/trapexit/scorch.git
+    - https://github.com/trapexit/bbf.git
+
+#- name: bootstrap > mergerfs - install tooling
+#  shell: |
+#    mv /opt/mergerfs/tooling/{}

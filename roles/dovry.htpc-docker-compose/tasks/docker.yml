@@ -1,0 +1,80 @@
+---
+# ansible docker-compose file for dovry.htpc-docker-compose
+
+- name: Get container status
+  shell: docker inspect --format={{ '{{.State.Running}}' }} {{ le_sub|random }}
+  register: containerstatus_up
+  ignore_errors: true
+  changed_when: true
+  tags:
+    - containerstatus
+
+#- name: debug container status
+#  debug: 
+#    msg: "{{ containerstatus }}"
+#  tags:
+#    - containerstatus
+
+- name: docker-compose - stop old htpc container environment
+  docker_compose:
+    project_src: "{{ compose_src }}"
+    state: absent
+  changed_when: false # task should restart the container, sets desired results as ok
+  when: containerstatus_up.stdout|bool == true
+  register: containerdown
+
+- name: docker-compose - create folder
+  become: true
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: docker
+    mode: "774"
+    state: directory
+  loop:
+  - "{{ compose_src }}"
+  tags:
+  - compose
+  - restart
+  - down
+  - folder
+
+- name: docker-compose - move compose file to server
+  become: true
+  template:
+    src: files/docker-compose.yml.j2
+    dest: "{{ compose_src }}/docker-compose.yml"
+    owner: root
+    group: docker
+    mode: "774"
+  check_mode:
+  diff: yes
+  changed_when: false
+  when: containerdown|bool == true #.stdout
+  tags:
+  - compose
+  - restart
+  - down
+  - move_up
+
+- name: docker-compose - start container environment
+  docker_compose:
+    project_src: "{{ compose_src }}"
+    state: present
+    remove_orphans: true
+  changed_when: false
+  tags:
+  - compose
+  - restart
+  - up
+  - move_up
+
+- name: docker-compose - prune docker ecosystem
+  docker_prune:
+    containers: yes
+    images: yes
+    networks: yes
+    volumes: yes
+  tags:
+    - never
+    - prune

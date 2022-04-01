@@ -1,0 +1,31 @@
+---
+# defaults file for dovry.htpc-docker-compose
+
+config: /opt/docker_data
+
+compose_src: /opt/compose
+storage: /mnt/storage
+
+downloads: "{{ storage }}/downloads"
+media: "{{ storage }}/media"
+transcode: "{{ media }}/.transcode"
+
+network_name: htpc_net
+
+anime: "{{ media }}/anime"
+audiobooks: "{{ media }}/audiobooks"
+books: "{{ media }}/books"
+cartoons: "{{ media }}/cartoons"
+educational: "{{ media }}/educational"
+horror_movies: "{{ media }}/horror_movies"
+movies: "{{ media }}/movies"
+music: "{{ media }}/music"
+podcasts: "{{ media }}/podcasts"
+tv: "{{ media }}/tv"
+nsfw: "{{ media }}/nsfw"
+
+puid: "1000"
+pgid: "1000"
+tz: Europe/Oslo
+
+restart: unless-stopped

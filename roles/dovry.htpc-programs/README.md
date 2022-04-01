@@ -14,8 +14,14 @@ Role Variables
 vars/main.yml
 
 ```yaml
-# users to be added to the group 'docker'
+# list users to be added to the group 'docker'
 docker_users:
+```
+
+vars/snapraid.yml
+
+```yaml
+
 ```
 
 Dependencies

@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Dovry
+  description: Spin up a cluster of containers
+  license: MIT
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: Debian
+    versions:
+    - all
+
+  galaxy_tags: []
+
+  dependencies: [dovry.htpc-bootstrap, dovry.htpc-programs]

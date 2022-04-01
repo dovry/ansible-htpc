@@ -15,30 +15,32 @@ snap_month: "*"
 
 # leave empty to disable
 snap_log: snapraid.log
-snap_log_size_in_kb: 10000 # this is KiB, 10.000 is 10MB logfile
+snap_log_size_in_kb: 2000 # this is KiB, 10.000 is 10MB logfile
 
 # comma seperated
-mail_send_on: "error" # success,error
+mail_send_on: error # success,error
 
 # abort operation if there are more deletes than this, set to -1 to disable
-delete_threshold:  # has default
+delete_threshold:  # default is 250 files
 
 # true = summary || false = full output
 snap_short_mail: true
 # title of email report
-snap_mail_subject: "" # has default
+snap_mail_subject: # has default
 
 # mail sender
 snap_mail_user:
 # mail sender pass
-snap_mail_pass:
+# if you're using gmail, create an app password https://tinyurl.com/yb8cbr2p
+snap_mail_pass: 
+
 
 # if another address should recieve the mail instead of snap_mail_user
 snap_mail_recipient:
 
 # SMTP
 snap_mail_host: smtp.gmail.com
-snap_mail_port: "465" # has default
+snap_mail_port: 465
 snap_mail_ssl: true 
 
 # scrub

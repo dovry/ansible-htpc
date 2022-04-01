@@ -4,5 +4,5 @@
 # based on that assumption (primarily KODI).
 # http://kodi.wiki/view/NFS
 
-/mnt/storage/movies       *({{ nfs_rx }},sync,no__squash)
-/mnt/storage/tv           *({{ nfs_rx }},sync,no_rootash)
+/mnt/storage/movies       *({{ nfs_ro }},sync,no__squash)
+/mnt/storage/tv           *({{ nfs_ro }},sync,no_rootash)

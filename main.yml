@@ -7,3 +7,4 @@
   roles:
     - dovry.htpc-bootstrap # prepare the system
     - dovry.htpc-programs  # install required software
+    - dovry.htpc-docker-compose # setup HTPC containers
