@@ -12,6 +12,7 @@
 # Plex and other media players will not function
 # with large libraries if the number is too low
 - name: bootstrap - Increase inotify max watches
+  become: true
   sysctl: 
     name: fs.inotify.max_user_watches 
     value: "{{ max_watches }}"
@@ -19,8 +20,14 @@
   tags:
     - inotify
 
+#- name: bootstrap - include mergerfs.yml
+#  include: mergerfs.yml
+
 - name: bootstrap - include mergerfs.yml
-  include: mergerfs.yml
+  import_tasks: mergerfs.yml # prepare the system
 
 - name: bootstrap - include drives.yml
-  include: drives.yml
+  import_tasks: drives.yml # prepare the system
+
+#- name: bootstrap - include drives.yml
+#  include: drives.yml

@@ -4,7 +4,19 @@
 
 - hosts: htpc
   become: true
-  roles:
-    - dovry.htpc-bootstrap # prepare the system
-    - dovry.htpc-programs  # install required software
-    - dovry.htpc-docker-compose # setup HTPC containers
+  vars_files: 
+    - ~/.ansible/vault
+  tasks:
+
+  - name: bootstrap
+    ansible.builtin.import_role:
+      name: dovry.htpc-bootstrap # prepare the system
+
+  - name: programs
+    ansible.builtin.import_role:
+      name: dovry.htpc-programs # prepare the system
+      
+  - name: docker-compose
+    ansible.builtin.import_role:
+      name: dovry.htpc-docker-compose # prepare the system
+
