@@ -1,4 +1,4 @@
 ---
 # vars file for dovry.htpc-programs
 
-docker_users:
+docker_users: "{{ ansible_user }}"

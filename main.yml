@@ -3,20 +3,24 @@
 # ansible-playbook install.yml
 
 - hosts: htpc
-  become: true
+  become: yes
   vars_files: 
     - ~/.ansible/vault
   tasks:
+
+  - name: main - verify become password
+    when: vault_become_pass and ansible_user is defined
+    debug: 
+      msg: become pass and ansible user are defined
+
+  - name: programs
+    ansible.builtin.import_role:
+      name: dovry.htpc-programs # prepare the system
 
   - name: bootstrap
     ansible.builtin.import_role:
       name: dovry.htpc-bootstrap # prepare the system
 
-  - name: programs
-    ansible.builtin.import_role:
-      name: dovry.htpc-programs # prepare the system
-      
   - name: docker-compose
     ansible.builtin.import_role:
       name: dovry.htpc-docker-compose # prepare the system
-

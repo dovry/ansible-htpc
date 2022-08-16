@@ -47,10 +47,10 @@
     owner: root
     group: docker
     mode: "774"
-  check_mode:
-  diff: yes
-  changed_when: false
-  when: containerdown|bool == true #.stdout
+  #check_mode:
+  #diff: yes
+  #changed_when: false
+  #when: containerdown|bool == true #.stdout
   tags:
   - compose
   - restart

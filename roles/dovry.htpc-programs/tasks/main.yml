@@ -21,29 +21,33 @@
       - apt-transport-https
       - gnupg-agent
       - software-properties-common
+      - cron
 
 - name: programs - Add repositories for packages
   apt_repository:
     repo: "{{ item }}"
   with_items:
-      - "ppa:tikhonov/snapraid"
       - "ppa:deadsnakes/ppa" # required for snapraid-runner
 
 - name: programs - Install desired packages
-  apt:
-    name: "{{ packages }}"
+  ansible.builtin.apt:
     update_cache: true
     state: present
-  vars:
-    packages:
+    pkg:
       - fuse
       - python3 # required for snapraid-runner
       - python-pip
       - python3-passlib
       - python3-pip
       - python3-setuptools
-      - snapraid # requires the apt repository task to run successfully
   register: pkgs_install
+
+- name: bootstrap - Install and upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+    executable: pip3
+
 
 - name: bootstrap - install QOL software
   when: qol_pkgs is defined
