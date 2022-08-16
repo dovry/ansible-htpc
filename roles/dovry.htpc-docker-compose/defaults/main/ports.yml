@@ -54,3 +54,5 @@ JELLYFIN2: 8920
 muximux_port: 88
 
 digikam_port: 3000
+
+photoshow_port: 8889

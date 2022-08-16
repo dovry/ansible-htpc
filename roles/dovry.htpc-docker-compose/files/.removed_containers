@@ -1,88 +1,119 @@
-#  heimdall:
-#    container_name: heimdall
-#    image: lscr.io/linuxserver/heimdall
-#    environment:
-#      - PUID={{ puid }}
-#      - PGID={{ pgid }}
-#      - TZ={{ tz }}
-#    volumes:
-#      - {{ config }}/heimdall:/config
-#    ports:
-#      - {{ heimdall_port1 }}:80
-#      - {{ heimdall_port2 }}:443
-#    restart: unless-stopped
-#    networks:
-#      {{ network_name }}:
+  heimdall:
+    container_name: heimdall
+    image: lscr.io/linuxserver/heimdall
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/heimdall:/config
+    ports:
+      - {{ heimdall_port1 }}:80
+      - {{ heimdall_port2 }}:443
+    restart: unless-stopped
+    networks:
+      {{ network_name }}:
 
-#
-#  airsonic:
-#    container_name: airsonic
-#    image: lscr.io/linuxserver/airsonic
-#    restart: {{ restart }}
-#    environment:
-#      - PUID={{ puid }}
-#      - PGID={{ pgid }}
-#      - TZ={{ tz }}
-#      #- CONTEXT_PATH=URL_BASE #optional
-#    volumes:
-#      - {{ config }}/airsonic:/config
-#      - {{ music }}:/music
-#      - {{ config }}/airsonic/playlists:/playlists
-#      - {{ podcasts }}:/podcasts
-#      - {{ audiobooks }}:/audiobooks
-#    ports:
-#      - {{ airsonic_port }}:4040
-#    networks:
-#      {{ network_name }}:
-#
-#  calibre-web:
-#    container_name: calibre-web
-#    image: lscr.io/linuxserver/calibre-web
-#    environment:
-#      - PUID={{ puid }}
-#      - PGID={{ pgid }}
-#      - TZ={{ tz }}
-#      - DOCKER_MODS=linuxserver/calibre-web:calibre
-#    volumes:
-#      - {{ config }}/calibre-web:/config
-#      - {{ books }}:/books
-#    ports:
-#      - {{ calibre_web_port }}:8083
-#    restart: {{ restart }}
-#    networks:
-#      {{ network_name }}:
-#
-#  lazylibrarian:
-#    container_name: lazylibrarian
-#    image: lscr.io/linuxserver/lazylibrarian
-#    environment:
-#      - DOCKER_MODS=linuxserver/calibre-web:calibre
-#      - PUID={{ puid }}
-#      - PGID={{ pgid }}
-#      - TZ={{ tz }}
-#    volumes:
-#      - {{ config }}/lazylibrarian:/config
-#      - {{ downloads }}:/downloads
-#      - {{ books }}:/books/ebooks
-#      - {{ audiobooks }}:/books/audiobooks
-#    ports:
-#      - {{ lazylibrarian_port }}:5299
-#    restart: {{ restart }}
-#    networks:
-#      {{ network_name }}:
-#    depends_on:
-#      - "calibre"
-#  digikam:
-#    container_name: digikam
-#    image: lscr.io/linuxserver/digikam
-#    environment:
-#      - PUID={{ puid }}
-#      - PGID={{ pgid }}
-#      - TZ={{ tz }}
-#    volumes:
-#      - {{ config }}/digikam:/config
-#      - {{ storage }}/backup/Pictures:/Pictures
-#    ports:
-#      - {{ digikam_port }}:3000 #optional
-#    restart: {{ restart }}
-#    network_mode: host
+
+  airsonic:
+    container_name: airsonic
+    image: lscr.io/linuxserver/airsonic
+    restart: {{ restart }}
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+      #- CONTEXT_PATH=URL_BASE #optional
+    volumes:
+      - {{ config }}/airsonic:/config
+      - {{ music }}:/music
+      - {{ config }}/airsonic/playlists:/playlists
+      - {{ podcasts }}:/podcasts
+      - {{ audiobooks }}:/audiobooks
+    ports:
+      - {{ airsonic_port }}:4040
+    networks:
+      {{ network_name }}:
+
+  calibre-web:
+    container_name: calibre-web
+    image: lscr.io/linuxserver/calibre-web
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+      - DOCKER_MODS=linuxserver/calibre-web:calibre
+    volumes:
+      - {{ config }}/calibre-web:/config
+      - {{ books }}:/books
+    ports:
+      - {{ calibre_web_port }}:8083
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+
+  lazylibrarian:
+    container_name: lazylibrarian
+    image: lscr.io/linuxserver/lazylibrarian
+    environment:
+      - DOCKER_MODS=linuxserver/calibre-web:calibre
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/lazylibrarian:/config
+      - {{ downloads }}:/downloads
+      - {{ books }}:/books/ebooks
+      - {{ audiobooks }}:/books/audiobooks
+    ports:
+      - {{ lazylibrarian_port }}:5299
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:
+    depends_on:
+      - "calibre"
+  digikam:
+    container_name: digikam
+    image: lscr.io/linuxserver/digikam
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/digikam:/config
+      - {{ storage }}/backup/Pictures:/Pictures
+    ports:
+      - {{ digikam_port }}:3000 #optional
+    restart: {{ restart }}
+    network_mode: host
+
+  muximux:
+    image: lscr.io/linuxserver/muximux
+    container_name: muximux
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+    volumes:
+      - {{ config }}/muximux:/config
+    ports:
+      - {{ muximux_port }}:80
+    restart: {{ restart }}
+    networks:
+      - {{ network_name }}
+
+  ombi:
+    container_name: ombi
+    image: lscr.io/linuxserver/ombi
+    environment:
+      - PUID={{ puid }}
+      - PGID={{ pgid }}
+      - TZ={{ tz }}
+      #- BASE_URL=/ombi #optional
+    volumes:
+      - {{ config }}/ombi:/config
+    ports:
+      - {{ ombi_port }}:3579
+    restart: {{ restart }}
+    networks:
+      {{ network_name }}:

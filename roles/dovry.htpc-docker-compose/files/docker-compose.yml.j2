@@ -47,21 +47,6 @@ services:
 ###### CONFIGURATION ##########################################
 ###############################################################
 
-  muximux:
-    image: lscr.io/linuxserver/muximux
-    container_name: muximux
-    environment:
-      - PUID={{ puid }}
-      - PGID={{ pgid }}
-      - TZ={{ tz }}
-    volumes:
-      - {{ config }}/muximux:/config
-    ports:
-      - {{ muximux_port }}:80
-    restart: {{ restart }}
-    networks:
-      - {{ network_name }}
-
   dozzle:
     container_name: dozzle
     image: amir20/dozzle
@@ -89,22 +74,6 @@ services:
     ports:
       - {{ pyload_port1 }}:8000
       - {{ pyload_port2 }}:7227 #optional
-    networks:
-      {{ network_name }}:
-
-  ombi:
-    container_name: ombi
-    image: lscr.io/linuxserver/ombi
-    environment:
-      - PUID={{ puid }}
-      - PGID={{ pgid }}
-      - TZ={{ tz }}
-      #- BASE_URL=/ombi #optional
-    volumes:
-      - {{ config }}/ombi:/config
-    ports:
-      - {{ ombi_port }}:3579
-    restart: {{ restart }}
     networks:
       {{ network_name }}:
 
@@ -289,26 +258,48 @@ services:
 ###### BOOKS ##################################################
 ###############################################################
 
-  calibre:
-    container_name: calibre
-    image: lscr.io/linuxserver/calibre
+
+#  calibre:
+#    container_name: calibre
+#    image: lscr.io/linuxserver/calibre
+#    environment:
+#      - PUID={{ puid }}
+#      - PGID={{ pgid }}
+#      - TZ={{ tz }}
+#      #- GUAC_USER=
+#      #- GUAC_PASS=
+#    volumes:
+#      - {{ config }}/calibre:/config
+#      - {{ downloads }}:/downloads
+#      - {{ books }}:/books
+#    ports:
+#      - {{ calibre_port1 }}:8080
+#      - {{ calibre_port2 }}:8081
+#    restart: {{ restart }}
+#    networks:
+#      {{ network_name }}:
+
+
+###############################################################
+###### Photos ################################################
+###############################################################
+
+  photoshow:
+    image: lscr.io/linuxserver/photoshow:latest
+    container_name: photoshow
+    restart: {{ restart }}
     environment:
       - PUID={{ puid }}
       - PGID={{ pgid }}
       - TZ={{ tz }}
-      #- GUAC_USER=
-      #- GUAC_PASS=
     volumes:
-      - {{ config }}/calibre:/config
-      - {{ downloads }}:/downloads
-      - {{ books }}:/books
+      - {{ config }}/photoshow:/config
+      - {{ config }}/photoshow/thumbnails:/Thumbs
+      - {{ photos }}:/Pictures:ro
     ports:
-      - {{ calibre_port1 }}:8080
-      - {{ calibre_port2 }}:8081
-    restart: {{ restart }}
+      - {{ photoshow_port }}:80
     networks:
       {{ network_name }}:
-
 
 
 ###############################################################
@@ -387,28 +378,28 @@ services:
 ###### PLAYER #################################################
 ###############################################################
 
-  jellyfin:
-    container_name: jellyfin
-    image: lscr.io/linuxserver/jellyfin
-    restart: {{ restart }}
-    environment:
-     - PUID={{ puid }}
-     - PGID={{ pgid }}
-     - TZ={{ tz }}
-    volumes:
-     - {{ config }}/jellyfin:/config
-     - {{ anime }}:/anime
-     - {{ cartoons }}:/cartoons
-     - {{ horror_movies }}:/horror_movies
-     - {{ movies }}:/movies
-     - {{ tv }}:/tv
-    ports:
-      - {{ JELLYFIN }}:8096
-      - {{ JELLYFIN2 }}:8920 #optional
-    networks:
-      {{ network_name }}:
-    depends_on:
-      - portainer
+#  jellyfin:
+#    container_name: jellyfin
+#    image: lscr.io/linuxserver/jellyfin
+#    restart: {{ restart }}
+#    environment:
+#     - PUID={{ puid }}
+#     - PGID={{ pgid }}
+#     - TZ={{ tz }}
+#    volumes:
+#     - {{ config }}/jellyfin:/config
+#     - {{ anime }}:/anime
+#     - {{ cartoons }}:/cartoons
+#     - {{ horror_movies }}:/horror_movies
+#     - {{ movies }}:/movies
+#     - {{ tv }}:/tv
+#    ports:
+#      - {{ JELLYFIN }}:8096
+#      - {{ JELLYFIN2 }}:8920 #optional
+#    networks:
+#      {{ network_name }}:
+#    depends_on:
+#      - portainer
 
   plex:
     container_name: plex

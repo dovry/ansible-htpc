@@ -1,6 +1,10 @@
 ---
 # tasks file for dovry.htpc-bootstrap
 
+- name: install required programs
+  ansible.builtin.import_role:
+    name: dovry.htpc-programs
+
 - name: bootstrap - create folders
   file:
     path: "{{ item }}"

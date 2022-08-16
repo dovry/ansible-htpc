@@ -1,0 +1,48 @@
+---
+# tasks/fetch_snapraid.yml file for dovry.htpc-programs
+
+- hosts: htpc
+  become: true
+  tasks:
+
+  - name: programs - Install desired packages
+    apt:
+      name: "{{ packages }}"
+      update_cache: true
+      state: present
+    vars:
+      packages:
+        - apt-transport-https
+        - gnupg-agent
+        - software-properties-common
+        - fuse
+        - python3 # required for snapraid-runner
+        - python3-passlib
+        - python3-pip
+        - python3-setuptools
+    register: pkgs_install
+
+  - name: Install required python package
+    ansible.builtin.pip:
+      name: github3.py
+
+  - name: Get latest snapraid release
+    community.general.github_release:
+      user: amadvance
+      repo: snapraid
+      action: latest_release
+    register: latest_release
+    tags:
+      - debug 
+      - install_snapraid
+
+  - name: debug
+    debug: "{{ latest_release }}"
+    tags: debug
+
+  - name: Extract snapraid release
+    when: latest_release
+    ansible.builtin.unarchive:
+      src: "{{ latest_release }}"
+      dest: /tmp/snapraid_extract
+    tags: install_snapraid

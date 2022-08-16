@@ -13,6 +13,7 @@ le_sub: # DNS records for each service
   - nzbhydra
   - ombi
   - plex
+  - photoshow
   - portainer
   - pyload
   - qbittorrent

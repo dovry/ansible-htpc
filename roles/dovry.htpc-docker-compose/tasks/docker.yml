@@ -50,7 +50,7 @@
   check_mode:
   diff: yes
   changed_when: false
-  when: containerdown|bool == true #.stdout
+  when: containerdown|bool # == true #.stdout
   tags:
   - compose
   - restart
