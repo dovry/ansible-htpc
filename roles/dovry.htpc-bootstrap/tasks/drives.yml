@@ -1,6 +1,14 @@
 ---
 # tasks/drive.yml for dovry.htpc-bootstrap
 
+- name: bootstrap > drives - create mountpoints
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0775'
+  with_items:
+    - "{{ disk_mnt }}"
+
 - name: bootstrap > drives - add disks to /etc/fstab
   mount:
     src: "{{ item.0 }}" # loop over first list

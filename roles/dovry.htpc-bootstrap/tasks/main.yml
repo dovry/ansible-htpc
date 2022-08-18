@@ -20,14 +20,8 @@
   tags:
     - inotify
 
-#- name: bootstrap - include mergerfs.yml
-#  include: mergerfs.yml
-
 - name: bootstrap - include mergerfs.yml
   import_tasks: mergerfs.yml # prepare the system
 
 - name: bootstrap - include drives.yml
   import_tasks: drives.yml # prepare the system
-
-#- name: bootstrap - include drives.yml
-#  include: drives.yml

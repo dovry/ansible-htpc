@@ -9,13 +9,25 @@
   tasks:
 
   - name: main - verify become password
-    when: vault_become_pass and ansible_user is defined
-    debug: 
-      msg: become pass and ansible user are defined
+    when: ansible_become_pass
+    ansible.builtin.debug: 
+      msg: become pass is defined #, is "{{ ansible_become_pass }}"
+    tags:
+      - vars_check
+
+  - name: docker-compose - verify docker user
+    when: ansible_user
+    ansible.builtin.debug:
+      msg: ansible user is defined #, is "{{ ansible_user }}"
+    tags:
+      - vars_check
+
 
   - name: programs
     ansible.builtin.import_role:
       name: dovry.htpc-programs # prepare the system
+    tags:
+      - samba
 
   - name: bootstrap
     ansible.builtin.import_role:

@@ -1,26 +1,39 @@
 [global]
-  workgroup = KTZ
-  server string = "{{ ansible_hostname }}"
+  workgroup = WORKGROUP
+  server string = {{ ansible_hostname }}
   security = user
-  guest ok = yes
+  guest ok = no
   map to guest = Bad Password
 
   log file = /var/log/samba/%m.log
   max log size = 50
-  printcap name = /dev/null
-  load printers = no
 
 # Samba Shares
 [opt]
   comment = opt directory
   path = /opt
+  browseable = no
+  read only = no
+  invalid users = root bin daemon nobody named sys tty disk mem kmem users
+
+[docker_data]
+  comment = docker data directory
+  path = /opt/docker_data
   browseable = yes
   read only = no
-  guest ok = yes
+  invalid users = root bin daemon nobody named sys tty disk mem kmem users
+
+[compose]
+  comment = docker-compose directory
+  path = /opt/compose
+  browseable = yes
+  read only = no
+  invalid users = root bin daemon nobody named sys tty disk mem kmem users
 
 [storage]
-  comment = Storage on "{{ ansible_hostname }}"
+  comment = Storage on {{ ansible_hostname }}
   path = /mnt/storage
   browseable = yes
   read only = no
   guest ok = yes
+  invalid users = root bin daemon nobody named sys tty disk mem kmem users

@@ -4,26 +4,26 @@
 max_watches: 100000
 
 folders:
-  - "/mnt/disk1"
-  - "/mnt/disk2"
-  - "/mnt/disk3"
-  - "/mnt/parity"
   - "/mnt/storage"
   - "/opt/snapraid"
 
-# ls /dev/disk/by-id
+# ls -Halp /dev/disk/by-id | grep part
 # NB! grab the "NNNN-partX" ID
-disk_id:
-  - "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0FVRJV2-part1"
-  - "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K2DVURR6-part1"
-  - "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K5YTYE7P-part1"
-  - "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K3AX5XT6-part1"
 
+disk_by_id: "/dev/disk/by-id/"
+
+disk_id:
+  - "{{ disk_by_id }}/wwn-0x50014ee20ff497d8-part1" # -> ../../sda1
+  - "{{ disk_by_id }}/wwn-0x50014ee20ff489c8-part1" # -> ../../sdc1
+  - "{{ disk_by_id }}/wwn-0x50014ee26549da03-part1" # -> ../../sdd1
+  - "{{ disk_by_id }}/wwn-0x50014ee265fdea7a-part1" # -> ../../sde1
+
+mnt: "/mnt"
 disk_mnt:
-  - "/mnt/disk1"
-  - "/mnt/disk2"
-  - "/mnt/disk3"
-  - "/mnt/parity"
+  - "{{ mnt }}/disk1"
+  - "{{ mnt }}/disk2"
+  - "{{ mnt }}/disk3"
+  - "{{ mnt }}/parity"
 
 disk_fstype: ext4
 

@@ -9,7 +9,7 @@
 
 - name: programs > samba - restart samba service
   service:
-    name: smdb
+    name: smbd
     enabled: "{{ samba_service_enabled }}"
     state: "{{ samba_service_state }}"
 

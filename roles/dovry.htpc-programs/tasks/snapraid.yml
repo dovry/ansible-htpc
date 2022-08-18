@@ -11,11 +11,7 @@
     owner: root
     group: root
     mode: "644"
-  # initiate sync in the background while the rest of the tasks run
   changed_when: true
-
-- name: run all notified handlers
-  meta: flush_handlers
 
 - name: programs > snapraid - fetch snapraid-runner
   get_url:

@@ -1,14 +1,6 @@
 ---
 # tasks file for dovry.htpc-docker-compose
 
-- name: docker-compose - verify docker user
-  when: ansible_user is defined
-  debug: 
-    msg: become pass and ansible user are defined
-
-- meta: end_play
-  when: ansible_user not defined
-
 - name: add defined user(s) to docker group
   ansible.builtin.user:
     name: ansible_user

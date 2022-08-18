@@ -15,6 +15,14 @@
 #  tags:
 #    - containerstatus
 
+- name: docker-compose - create folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0775'
+  with_items:
+    - "{{ config }}"
+
 - name: docker-compose - stop old htpc container environment
   docker_compose:
     project_src: "{{ compose_src }}"

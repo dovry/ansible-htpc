@@ -2,3 +2,7 @@
 # vars file for dovry.htpc-programs
 
 docker_users: "{{ ansible_user }}"
+
+samba_users:
+- username: "{{ ansible_user }}"
+  password: "{{ ansible_become_pass }}"

@@ -1,0 +1,60 @@
+---
+# programs.yml file for dovry.htpc-programs
+
+
+- name: programs > programs - Remove undesired packages
+  apt:
+    name: "{{ packages }}"
+    state: absent
+    autoremove: true
+    autoclean: true
+  vars:
+    packages:
+      - snapd
+
+- name: programs > programs - Install dependencies
+  apt:
+    name: "{{ deps }}"
+    state: present
+    update_cache: true
+  vars:
+    deps:
+      - apt-transport-https
+      - gnupg-agent
+      - software-properties-common
+      - cron
+
+- name: programs > programs - Add repositories for packages
+  apt_repository:
+    repo: "{{ item }}"
+  with_items:
+      - "ppa:deadsnakes/ppa" # required for snapraid-runner
+
+- name: programs > programs - Install desired packages
+  ansible.builtin.apt:
+    update_cache: true
+    state: present
+    pkg:
+      - fuse
+      - python3 # required for snapraid-runner
+      - python-pip
+      - python3-passlib
+      - python3-pip
+      - python3-setuptools
+  register: pkgs_install
+
+- name: bootstrap - Install and upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+    executable: pip3
+
+- name: bootstrap - install QOL software
+  when: qol_pkgs is defined
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - silversearcher-ag
+      - tree
+      - vim

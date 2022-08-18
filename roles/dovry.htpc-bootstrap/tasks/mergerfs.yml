@@ -3,7 +3,7 @@
 # tasks/mergerfs.yml file for dovry.htpc-bootstrap
 
 - name: bootstrap > mergerfs - install mergerfs
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg:
       - mergerfs
@@ -18,7 +18,3 @@
     - https://github.com/trapexit/mergerfs-tools.git
     - https://github.com/trapexit/scorch.git
     - https://github.com/trapexit/bbf.git
-
-#- name: bootstrap > mergerfs - install tooling
-#  shell: |
-#    mv /opt/mergerfs/tooling/{}
